@@ -22,7 +22,7 @@ export default function RestaurantCard() {
                 View more information
               </div>
             </Link>
-            </div>
           </div>
+        </div>
     )
 }

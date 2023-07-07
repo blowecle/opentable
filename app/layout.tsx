@@ -12,10 +12,12 @@ export default function RootLayout({
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body>
+      <body
+      suppressHydrationWarning={true} 
+      >
         <main className="bg-gray-100 min-h-screen w-screen">
             <main className="max-w-screen-2xl m-auto bg-white">
-
+            <NavBar />
               {children}
             </main>
         </main>

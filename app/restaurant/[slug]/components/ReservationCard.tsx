@@ -1,9 +1,10 @@
+"use client"
+
 import React from 'react'
 
 export default function ReservationCard() {
   return (
-    <div className="w-[27%] relative text-reg">
-        <div className="fixed w-[15%] bg-white rounded p-3 shadow">
+        <div className="fixed w-[15%] bg-white rounded p-3 ml-5 shadow">
           <div className="text-center border-b pb-2 font-bold">
             <h4 className="mr-7 text-lg">Make a Reservation</h4>
           </div>
@@ -35,6 +36,5 @@ export default function ReservationCard() {
             </button>
           </div>
         </div>
-      </div>
   )
 }
