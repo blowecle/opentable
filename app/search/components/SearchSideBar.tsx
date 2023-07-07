@@ -1,20 +1,49 @@
-export default function SearchSidebar() {
+import { PrismaClient } from "@prisma/client"
+
+const prisma = new PrismaClient();
+
+const fetchLocations = () => {
+  const locations = prisma.location.findMany({
+    select: {
+      name: true
+    }
+  })
+  return locations;
+}
+
+const fetchCusines = () => {
+  const cuisines = prisma.cuisine.findMany({
+    select: {
+      name: true
+    }
+  })
+  return cuisines;
+}
+
+export default async function SearchSidebar() {
+
+  const locations = await fetchLocations();
+  const cuisines = await fetchCusines();
+
     return (
-        <div className='w-1/5'>
-        <div className="border-b pb-4">
+        <div className='w-1/5 capitalize'>
+          <div className="border-b pb-4">
             <h1 className='mb-2'>Region</h1>
-            <p className="font-light text-reg">Toronto</p>
-            <p className="font-light text-reg">Ottawa</p>
-            <p className="font-light text-reg">Montreal</p>
-            <p className="font-light text-reg">Hamilton</p>
-            <p className="font-light text-reg">Kingston</p>
-            <p className="font-light text-reg">Niagara</p>
+            {locations.map((location) => (
+              <div className='flex'>
+                <input type="checkbox" className="mr-2"/>
+                <p className="font-light text-reg">{location.name}</p>
+              </div>
+            ))}
           </div>
           <div className="border-b pb-4 mt-3">
             <h1 className='mb-2'>Cousine</h1>
-            <p className="font-light text-reg">Mexican</p>
-            <p className="font-light text-reg">Italian</p>
-            <p className="font-light text-reg">Chinese</p>
+            {cuisines.map((cuisine) => (
+              <div className='flex'>
+                <input type="checkbox" className="mr-2"/>
+                <p className="font-light text-reg">{cuisine.name}</p>
+              </div>
+            ))}
           </div>
           <div className="mt-3 ppb-4">
             <h1 className='mb-2'>Price</h1>
