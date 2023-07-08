@@ -3,7 +3,7 @@
 import Header from '../components/Header'
 import RestaurantSearchCard from '../components/RestaurantSearchCard'
 import SearchSidebar from './components/SearchSideBar'
-import { PrismaClient } from '@prisma/client'
+import { Cuisine, PRICE, PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
@@ -17,8 +17,10 @@ const select = {
   slug: true
 }
 
-const fetchRestaurantsByLocation = (city: string | undefined) => {
-  if (!city) {
+const fetchRestaurantsByLocation = (
+  {city, cuisine, price}: {city?: string, cuisine?: string, price?: PRICE}
+) => {
+  if (!city && !cuisine && !price) {
     return prisma.restaurant.findMany({
         select: select
       });
@@ -26,23 +28,41 @@ const fetchRestaurantsByLocation = (city: string | undefined) => {
     where: {
       location: {
         name: city
-      }
+      },
+      cuisine: {
+        name: cuisine
+      },
+      price: price
     },
     select: select
 })
 }
 
+const fetchLocations = async () => {
+  const locations = prisma.location.findMany()
+  return locations;
+}
 
-export default async function Search({searchParams}: {searchParams: { city: string }}) {
+const fetchCusines = async () => {
+  const cuisines = prisma.cuisine.findMany()
+  return cuisines;
+}
 
-  const restaurants = await fetchRestaurantsByLocation(searchParams.city.toLowerCase());
-  console.log(restaurants)
+export default async function Search({searchParams}: {searchParams: { city?: string, cuisine?: string, price?: PRICE }}) {
+
+  const restaurants = await fetchRestaurantsByLocation(searchParams);
+  const locations = await fetchLocations();
+  const cuisines = await fetchCusines();
 
   return (
     <>
       <Header/>
       <div className='flex py-4 m-auto w-2/3 justify-between items-start'>
-      <SearchSidebar/>
+      <SearchSidebar
+      searchParams={searchParams}
+      locations={locations} 
+      cuisines={cuisines}
+      />
         <div className="w-5/6">
           {restaurants.length ? <>
           {restaurants.map((restaurant) => 

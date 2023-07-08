@@ -1,62 +1,72 @@
-import { PrismaClient } from "@prisma/client"
+import { Cuisine, Location, PRICE } from "@prisma/client"
+import Link from "next/link"
 
-const prisma = new PrismaClient();
+export default function SearchSidebar({locations, cuisines, searchParams}: {locations: Location[], cuisines: Cuisine[], searchParams: { city?: string, cuisine?: string, price?: PRICE }}) {
 
-const fetchLocations = () => {
-  const locations = prisma.location.findMany({
-    select: {
-      name: true
-    }
-  })
-  return locations;
-}
-
-const fetchCusines = () => {
-  const cuisines = prisma.cuisine.findMany({
-    select: {
-      name: true
-    }
-  })
-  return cuisines;
-}
-
-export default async function SearchSidebar() {
-
-  const locations = await fetchLocations();
-  const cuisines = await fetchCusines();
-
+  const prices = [{
+    price: PRICE.CHEAP,
+    label: "$",
+    className: "border w-full test-reg font-light rounded-l p-2 text-center"
+  }, {
+    price: PRICE.REGULAR,
+    label: "$$",
+    className: "border w-full test-reg font-light p-2 text-center"
+  }, {
+    price: PRICE.EXPENSIVE,
+    label: "$$$",
+    className: "border w-full test-reg font-light rounded-r p-2 text-center"
+  }]
     return (
         <div className='w-1/5 capitalize'>
           <div className="border-b pb-4">
             <h1 className='mb-2'>Region</h1>
             {locations.map((location) => (
-              <div className='flex'>
-                <input type="checkbox" className="mr-2"/>
-                <p className="font-light text-reg">{location.name}</p>
-              </div>
+              <Link href={{
+                pathname: '/search',
+                query: {
+                  ...searchParams,
+                  city: location.name
+                }
+              }
+                }>
+                <div className='flex'>
+                  <input type="checkbox" className="mr-2"/>
+                  <p className="font-light text-reg">{location.name}</p>
+                </div>
+              </Link>
             ))}
           </div>
           <div className="border-b pb-4 mt-3">
             <h1 className='mb-2'>Cousine</h1>
             {cuisines.map((cuisine) => (
-              <div className='flex'>
-                <input type="checkbox" className="mr-2"/>
-                <p className="font-light text-reg">{cuisine.name}</p>
-              </div>
+              <Link href={{
+                pathname: '/search',
+                query: {
+                  ...searchParams,
+                  cuisine: cuisine.name
+                }
+              }}>
+                <div className='flex'>
+                  <input type="checkbox" className="mr-2"/>
+                  <p className="font-light text-reg">{cuisine.name}</p>
+                </div>
+              </Link>
             ))}
           </div>
           <div className="mt-3 ppb-4">
             <h1 className='mb-2'>Price</h1>
             <div className="flex">
-              <button className="border w-full text-reg font-light rounded-l p-2">
-                $
-              </button>
-              <button className="border-t border-r border-b w-full text-reg font-light p-2">
-                $$
-              </button>
-              <button className="border-t border-r border-b w-full text-reg font-light rounded-r p-2">
-                $$$
-              </button>
+              {prices.map(({price, label, className}) => (
+                <Link href={{
+                  pathname: '/search',
+                  query: {
+                    ...searchParams,
+                    price
+                  }
+                }} className={className}>
+                  {label}
+                </Link>  
+              ))}
             </div>
           </div>
         </div>
