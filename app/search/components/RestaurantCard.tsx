@@ -1,28 +1,58 @@
-import Link from "next/link"
+import Link from "next/link";
+import { RestaurantCardType } from "../../page";
+import Price from "../../components/Price";
+import { Cuisine, PRICE, Location, Review } from "@prisma/client";
+import { calculateReviewRatingAverage } from "../../utilities/calculateReviewRatingAverage";
 
-export default function RestaurantCard() {
+interface Restaurant {
+    id: number;
+    name: string;
+    main_image: string;
+    price: PRICE;
+    cuisine: Cuisine;
+    location: Location;
+    slug: string;
+    reviews: Review[];
+}
+
+
+export default function RestaurantSearchCard({restaurant}: {restaurant: Restaurant}) {
+    
+    const renderRatingText = () => {
+        const rating = calculateReviewRatingAverage(restaurant.reviews);
+        if (rating === 0) return 'No reviews yet';
+        if (rating < 1) return 'Terrible';
+        if (rating < 2) return 'Bad';
+        if (rating < 3) return 'Okay';
+        if (rating < 4) return 'Good';
+        if (rating <= 5) return 'Awesome';
+
+    }
+
     return (
-        <div className="border-b flex pb-5">
-            <img className='w-44 rounded' src='https://images.otstatic.com/prod1/52840109/3/medium.jpg' alt=''/>
-            <div className="pl-5">
-              <h2 className="text-3xl">Yamas Austin</h2>
-              <div className="flex items-start">
-                <div className="flex mb-2">*****</div>
-                <p className="ml-2 text-sm">Awesome</p>
-              </div>
-              <div className="mb-9">
-                <div className="font-light flex text-reg">
-                <p className="mr-4">$$$</p>
-                <p className="mr-4">Mexican</p>
-                <p className="mr-4">Ottawa</p>
+            <div className='border-b flex pb-5 ml-5'>
+                <img src={restaurant.main_image} alt='' className='w-44 h-36 rounded'></img>
+                <div className='p-1 ml-2'>
+                    <div>
+                        <h3 className='text-2xl mb-2'>{restaurant.name}</h3>
+                        <div className='flex items-start'>
+                            <div className='flex mb-2'>
+                            *****
+                            </div>
+                            <p className='ml-2'>{renderRatingText()}</p>
+                        </div>
+                        <div className='flex capitalize text-reg font-light'>
+                            <p className='mr-3'>{restaurant.cuisine.name}</p>
+                            <Price price={restaurant.price}/>
+                            <p>{restaurant.location.name}</p>
+                        </div>
+                    </div>
+                  <div className="text-red-600">
+                      <Link href={`/restaurant/${restaurant.slug}`}>
+                          View more information
+                      </Link>
+                  </div>
                 </div>
-              </div>
-            <Link href="restaurant/milstone-grill">
-              <div className='text-red-600'>
-                View more information
-              </div>
-            </Link>
-          </div>
-        </div>
+            </div>
     )
 }

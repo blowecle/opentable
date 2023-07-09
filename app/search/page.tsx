@@ -1,7 +1,7 @@
 
 
 import Header from '../components/Header'
-import RestaurantSearchCard from '../components/RestaurantSearchCard'
+import RestaurantSearchCard from './components/RestaurantCard'
 import SearchSidebar from './components/SearchSideBar'
 import { PRICE, PrismaClient } from '@prisma/client'
 
@@ -18,8 +18,10 @@ const fetchRestaurantsByLocation = (searchParams: SearchParams) => {
     price: true,
     cuisine: true,
     location: true,
-    slug: true
+    slug: true,
+    reviews: true
   }
+
   if (searchParams.city) {
     const location = {
       name: {
