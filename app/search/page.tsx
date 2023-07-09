@@ -3,39 +3,49 @@
 import Header from '../components/Header'
 import RestaurantSearchCard from '../components/RestaurantSearchCard'
 import SearchSidebar from './components/SearchSideBar'
-import { Cuisine, PRICE, PrismaClient } from '@prisma/client'
+import { PRICE, PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
-const select = {
-  id: true,
-  name: true,
-  main_image: true,
-  price: true,
-  cuisine: true,
-  location: true,
-  slug: true
-}
+interface SearchParams { city?: string, cuisine?: string, price?: PRICE }
 
-const fetchRestaurantsByLocation = (
-  {city, cuisine, price}: {city?: string, cuisine?: string, price?: PRICE}
-) => {
-  if (!city && !cuisine && !price) {
-    return prisma.restaurant.findMany({
-        select: select
-      });
-  } else return prisma.restaurant.findMany({
-    where: {
-      location: {
-        name: city
-      },
-      cuisine: {
-        name: cuisine
-      },
-      price: price
-    },
+const fetchRestaurantsByLocation = (searchParams: SearchParams) => {
+  const where: any = {};
+  const select = {
+    id: true,
+    name: true,
+    main_image: true,
+    price: true,
+    cuisine: true,
+    location: true,
+    slug: true
+  }
+  if (searchParams.city) {
+    const location = {
+      name: {
+        equals: searchParams.city.toLowerCase()
+      }
+    }
+    where.location = location;
+  }
+  if (searchParams.cuisine) {
+    const cuisine = {
+      name: {
+        equals: searchParams.cuisine.toLowerCase()
+      }
+    }
+    where.cuisine = cuisine;
+  }
+  if (searchParams.price) {
+    const price = {
+      equals: searchParams.price
+    }
+    where.price = price;
+  }
+  return prisma.restaurant.findMany({
+    where: where,
     select: select
-})
+  })
 }
 
 const fetchLocations = async () => {
@@ -48,7 +58,7 @@ const fetchCusines = async () => {
   return cuisines;
 }
 
-export default async function Search({searchParams}: {searchParams: { city?: string, cuisine?: string, price?: PRICE }}) {
+export default async function Search({searchParams}: {searchParams: { city: string, cuisine: string, price: PRICE }}) {
 
   const restaurants = await fetchRestaurantsByLocation(searchParams);
   const locations = await fetchLocations();
@@ -59,9 +69,9 @@ export default async function Search({searchParams}: {searchParams: { city?: str
       <Header/>
       <div className='flex py-4 m-auto w-2/3 justify-between items-start'>
       <SearchSidebar
-      searchParams={searchParams}
       locations={locations} 
       cuisines={cuisines}
+      searchParams={searchParams}
       />
         <div className="w-5/6">
           {restaurants.length ? <>
