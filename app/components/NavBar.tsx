@@ -1,4 +1,6 @@
 import Link from "next/link"
+import LoginModal from "./LoginModal"
+
 
 export default function NavBar() {
     return (
@@ -6,8 +8,8 @@ export default function NavBar() {
         <Link href="/" className="font-bold text-gray-700 text-2xl">{" "}OpenTable{" "}</Link>
         <div>
           <div className="flex">
-            <button className="bg-blue-400 text-white border p-1 rounded px-4 mr-3">Sign In</button>
-            <button className="border p-1 px-4 rounded">Sign Up</button>
+            <LoginModal isSignIn={true}/>
+            <LoginModal isSignIn={false}/>
           </div>
         </div>
       </nav>

@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/material": "^5.11.6",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.13.7",
     "@next/font": "13.1.4",
     "@prisma/client": "^4.8.1",
     "@types/bcrypt": "^5.0.0",
