@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import validator from 'validator';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import * as jose from 'jose';
 
 const prisma = new PrismaClient();
 
@@ -77,8 +78,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 email,
             }
         });
+
+        //authentication
+        const alg = "HS256";
+
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+
+        const token = await new jose.SignJWT({
+            email: user.email
+        }).setProtectedHeader({alg}).setExpirationTime('24h').sign(secret);
+
         res.status(200).json({
-            hello: user,
+            token: token,
         })    
-    }
+    } else return res.status(404).json("Uknown endpoint")
 }
