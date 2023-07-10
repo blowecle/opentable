@@ -30,7 +30,6 @@ export default function SearchSidebar({locations, cuisines, searchParams}: {loca
               }
                 }>
                 <div className='flex'>
-                  <input type="checkbox" className="mr-2"/>
                   <p className="font-light text-reg">{location.name}</p>
                 </div>
               </Link>
@@ -47,7 +46,6 @@ export default function SearchSidebar({locations, cuisines, searchParams}: {loca
                 }
               }}>
                 <div className='flex'>
-                  <input type="checkbox" className="mr-2"/>
                   <p className="font-light text-reg">{cuisine.name}</p>
                 </div>
               </Link>
