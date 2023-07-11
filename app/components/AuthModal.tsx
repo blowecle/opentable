@@ -21,12 +21,12 @@ const style = {
 };
 
 export default function AuthModal({ isSignin }: { isSignin: boolean }) {
-  
+
   const {data, error, loading, setAuthState} = useContext(AuthenticationContext);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const {signIn} = useAuth();
+  const {signIn, signUp} = useAuth();
 
 
 
@@ -42,8 +42,8 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
   };
 
   const [inputs, setInputs] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     phone: "",
     city: "",
@@ -59,8 +59,8 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
       }
     } else {
       if (
-        inputs.firstName &&
-        inputs.lastName &&
+        inputs.first_name &&
+        inputs.last_name &&
         inputs.email &&
         inputs.password &&
         inputs.city &&
@@ -75,9 +75,16 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
 
   const handleClick = async () => {
     if (isSignin) {
-      await signIn({email: inputs.email, password: inputs.password});
+      await signIn({email: inputs.email, password: inputs.password}, handleClose);
     } else {
-      // await signUp(inputs);
+      await signUp({
+        first_name: inputs.first_name,
+        last_name: inputs.last_name,
+        email: inputs.email,
+        phone: inputs.phone,
+        city: inputs.city,
+        password: inputs.password
+    }, handleClose);
     }
   };
 
@@ -100,10 +107,12 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          
-            <div className="p-2 h-[600px]">
-                {/* <Alert severity="error" className="mb-4">
-                </Alert> */}
+            {loading ? (
+            <div className='p-2 h-[600px] flex items-center justify-center'>
+              <CircularProgress />
+            </div>
+            ) : (<div className="p-2 h-[600px]">
+                {error ? <Alert severity="error" className="mb-4">{error}</Alert> : null}
               <div className="uppercase font-bold text-center pb-2 border-b mb-2">
                 <p className="text-sm">
                   {renderContent("Sign In", "Create Account")}
@@ -129,7 +138,7 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
                   {renderContent("Sign In", "Create Account")}
                 </button>
               </div>
-            </div>
+            </div>)}
         </Box>
       </Modal>
     </div>
