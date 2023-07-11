@@ -1,5 +1,7 @@
 import NavBar from "./components/NavBar";
 import "./globals.css";
+import AuthContext from "./context/AuthContext";
+
 export default function RootLayout({
   children,
 }: {
@@ -16,10 +18,12 @@ export default function RootLayout({
       suppressHydrationWarning={true} 
       >
         <main className="bg-gray-100 min-h-screen w-screen">
+          <AuthContext>
             <main className="max-w-screen-2xl m-auto bg-white">
             <NavBar />
               {children}
             </main>
+          </AuthContext>
         </main>
       </body>
     </html>

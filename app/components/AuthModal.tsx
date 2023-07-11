@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import AuthModalInputs from "./AuthModalInputs";
 import { Alert, CircularProgress } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
+import { AuthenticationContext } from "../context/AuthContext";
 
 const style = {
   position: "absolute" as "absolute",
@@ -19,9 +21,12 @@ const style = {
 };
 
 export default function AuthModal({ isSignin }: { isSignin: boolean }) {
+  
+  const {data, error, loading, setAuthState} = useContext(AuthenticationContext);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const {signIn} = useAuth();
 
 
 
@@ -68,6 +73,14 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
     setDisabled(true);
   }, [inputs]);
 
+  const handleClick = async () => {
+    if (isSignin) {
+      await signIn({email: inputs.email, password: inputs.password});
+    } else {
+      // await signUp(inputs);
+    }
+  };
+
 
   return (
     <div>
@@ -89,8 +102,8 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
         <Box sx={style}>
           
             <div className="p-2 h-[600px]">
-                <Alert severity="error" className="mb-4">
-                </Alert>
+                {/* <Alert severity="error" className="mb-4">
+                </Alert> */}
               <div className="uppercase font-bold text-center pb-2 border-b mb-2">
                 <p className="text-sm">
                   {renderContent("Sign In", "Create Account")}
@@ -111,6 +124,7 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
                 <button
                   className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
                   disabled={disabled}
+                  onClick={handleClick}
                 >
                   {renderContent("Sign In", "Create Account")}
                 </button>
