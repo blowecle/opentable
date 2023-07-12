@@ -1,8 +1,9 @@
 "use client";
 
-import { create } from "domain";
-import React from "react"
+import React, { useEffect } from "react"
 import { useState, createContext } from "react";
+import axios from "axios";
+import { getCookie } from "cookies-next";
 
 interface User {
     id: number;
@@ -37,6 +38,49 @@ export default function AuthContext({children}: {children: React.ReactNode}) {
         data: null,
         error: null
     })
+
+    const fetchUser = async () => {
+        try {
+            console.log('ping 1')
+            const jwt = getCookie("jwt");
+            console.log('ping 2')
+            if(!jwt){
+                console.log('ping 3')
+                setAuthState({
+                    data: null,
+                    error: null,
+                    loading: false
+                })
+            }
+            console.log('ping 4')
+            const response = await axios.get('/api/auth/me', {
+                headers: {
+                    authorization: `Bearer ${jwt}`
+                }
+            })
+            console.log('ping 5')
+            axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+            console.log('ping 6')
+            setAuthState({
+                data: response.data,
+                error: null,
+                loading: false
+            })
+            console.log('ping 7')
+        } catch (error: any) {
+
+            setAuthState({
+                data: null,
+                error: error.response.data.errorMessage,
+                loading: false
+            })
+        }
+    }
+
+    useEffect(() => {
+        fetchUser();
+    }, [])
+
     return <AuthenticationContext.Provider value={{
         ...authState,
         setAuthState

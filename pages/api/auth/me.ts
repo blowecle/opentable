@@ -7,12 +7,30 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
 
-    //bearer token is validated by the middleware
-    const bearerToken = req.headers["authorization"] as string;
-    const token = bearerToken.split(" ")[1];
+    const bearerToken = req.headers.authorization;
+    
+    if(!bearerToken){
+        return res.status(401).json({errorMessage: "Unathorized request"});
+    }
 
+    const token = bearerToken.split(" ")[1]; 
+
+    if(!token){
+        return res.status(401).json({errorMessage: "Unauthorized request"});
+    }
+
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    
+    try {
+        await jose.jwtVerify(token, secret);
+    } catch (error) {
+        console.log(error)
+        return res.status(401).json({errorMessage: "Unathorized request"});
+    }
+    //bearer token is validated by the middleware
     const payload = jwt.decode(token) as {email: string};
 
+    
     if(!payload.email){
         return res.status(401).json({errorMessage: "Unauthorized request"});
     }
@@ -31,5 +49,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     });
 
-    return res.status(200).json({user});
+    if(!user){
+        return res.status(401).json({errorMessage: "User not found"});
+    }
+
+    return res.status(200).json(user);
 }

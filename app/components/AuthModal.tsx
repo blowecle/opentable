@@ -34,6 +34,7 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
     return isSignin ? signinContent : signupContent;
   };
 
+
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs({
       ...inputs,

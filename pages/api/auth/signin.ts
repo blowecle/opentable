@@ -4,6 +4,9 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 import * as jose from "jose";
 import { setCookie } from "cookies-next";
+import { NextResponse } from "next/server";
+import { cookies } from 'next/headers'
+import { serialize } from 'cookie'
 
 const prisma = new PrismaClient();
 
@@ -55,13 +58,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const alg = "HS256";
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-
+        
         const token = await new jose.SignJWT({
             email: user.email
         }).setProtectedHeader({alg}).setExpirationTime('24h').sign(secret);
-
+        
         setCookie("jwt", token, {req, res, maxAge: 60 * 6 * 24})
-
+        
+        
         res.status(200).json({
             first_name: user.first_name,
             last_name: user.last_name,
