@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         await jose.jwtVerify(token, secret);
     } catch (error) {
-        console.log(error)
         return res.status(401).json({errorMessage: "Unathorized request"});
     }
     //bearer token is validated by the middleware
