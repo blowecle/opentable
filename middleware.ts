@@ -27,5 +27,5 @@ export async function middleware(req: NextRequest, res: NextResponse){
 }
 
 export const config = {
-    matcher: ["/api/seed"], //routes for middleware to run on
+    matcher: ["/api/auth/me"], //routes for middleware to run on
 }
