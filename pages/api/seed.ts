@@ -11,7 +11,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-    // await prisma.table.deleteMany();
+    await prisma.table.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();
   await prisma.restaurant.deleteMany();
@@ -60,7 +60,7 @@ export default async function handler(
           "https://resizer.otstatic.com/v2/photos/xlarge/1/32484701.jpg",
           "https://resizer.otstatic.com/v2/photos/xlarge/1/32484708.jpg",
         ],
-        open_time: "14:30:00.000Z",
+        open_time: "14:00:00.000Z",
         close_time: "21:30:00.000Z",
         slug: "vivaan-fine-indian-cuisine-ottawa",
         location_id: ottawaLocationId,
@@ -1305,22 +1305,22 @@ export default async function handler(
       ],
     });
 
-    // await prisma.table.createMany({
-    //   data: [
-    //     {
-    //       restaurant_id: vivaanId,
-    //       seats: 4,
-    //     },
-    //     {
-    //       restaurant_id: vivaanId,
-    //       seats: 4,
-    //     },
-    //     {
-    //       restaurant_id: vivaanId,
-    //       seats: 2,
-    //     },
-    //   ],
-    // });
+    await prisma.table.createMany({
+      data: [
+        {
+          restaurant_id: vivaanId,
+          seats: 4,
+        },
+        {
+          restaurant_id: vivaanId,
+          seats: 4,
+        },
+        {
+          restaurant_id: vivaanId,
+          seats: 2,
+        },
+      ],
+    });
 
   res.status(200).json({ name: "hello" });
 }
